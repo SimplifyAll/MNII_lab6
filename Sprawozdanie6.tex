@@ -29,10 +29,96 @@
 	Metoda Rungego-Kutty rzędu 4-go (wzór "3/8") dla układu dwóch równań.
 	
 	\section{Metoda}
+	Celem powyższego zadania jest rozwiązanie układu dwóch równań różniczkowych zwyczajnych z zagadnieniem początkowym Cauchy'ego w postaci:
+	$$\begin{cases}
+	y_1' = f_1(x,y_1,y_2) \\
+	y_2' = f_2(x,y_1,y_2) \\
+	y_1(a) = y_{1a} \\
+	y_2(a) = y_{2a}
+	\end{cases}
+	$$
+	W tym celu zastosowana zostanie metoda Rungego-Kutty czędu 4-go.
+	\medskip
+	Powyższa metoda należy do grupy jawnych i jednokrokowych tzn. do obliczenia wartości w węźle $y_{i_1}$ wykorzystujemy tylko wartość w węźle $y_i$.
 	
+	\medskip
+	Aby rozwiązać równanie różniczkowe zwyczajne z zagadnieniem Cauchy'ego tzn:
+	$$\begin{cases}
+	y' = f(x,y) \\
+	y(a) = y_{a}
+	\end{cases}
+	$$
+	gdzie:
+	\begin{itemize}
+		\item $x \in [a,b]$ - przedział jest zdefiniowany dla danego problemu
+		\item $y_a$ - przybliżenie początkowe $y(a)$, w punkcie będącym początkiem przedziału, przyjmujemy że $x_0 = a$
+	\end{itemize}
+	należy dla wszystkich węzłów wyznaczyć przybliżenia funkcji ze wzoru:
+	$$ y_{i+1} = y_{i} + h*\displaystyle\sum_{j=1}^{r}c_jk_{j} $$
+	gdzie:
+	\begin{itemize}
+		\item $y_i$ - przybliżenie $y(x_i)$
+		\item $h = \frac{b-a}{n}$ - odległość między węzłami, gdzie:
+		\begin{itemize}
+			\item $a,b$ - punkty będące końcami rozważanego przedziału na którym funkcja jest określona
+			\item $n$ - ilość podziałów powyższego przedziału
+		\end{itemize}
+		\item $r$ - rząd metody, w rozważanym przypadku $r = 4$
+		\item $c_j$ - $j$-ta wartość z wektora $c$, będącego wektorem współczynników specyficznych dla danego wzoru Rungego-Kutty. W przypadku wzoru $(3/8)$:
+		$$c=[asdf fsdaf sdaf saf saf sdf sdf grerag asdf ]$$
+		\item $k_j$ - $j$-ta wartość z wektora $k$ obliczanego dla każdego węzła wg wzoru:
+		$$ 	k_{j}=f(x_i+h\displaystyle\sum_{l=1}^{j-1}b_{j,l} \quad;\quad y_{i} + h\displaystyle\sum_{l=1}^{j-1}b_{j,l}k_{l} )$$
+		gdzie:
+		\begin{itemize}
+			\item $b_{j,l}$ - $j,l$-ta wartość z macierzy $b$, będącej macierzą współczynników specyficznych dla danego wzoru Rungego-Kutty. W przypadku wzoru $(3/8)$:
+			$$b=\left[ \begin{array}{cccc}
+			<g_1, g_1> & <g_1, g_2> & <g_1, g_n> &  <g_1, g_n>\\
+			<g_2, g_1> & <g_2, g_2> & <g_1, g_n> & <g_2, g_n> \\
+			<g_1, g_n> & <g_1, g_n> & <g_1, g_n> & <g_1, g_n> \\
+			<g_n, g_1> & <g_n, g_2> & <g_1, g_n> & <g_n, g_n> \\
+			\end{array}\right]$$
+			\item $k_{l}$ - wcześniej obliczone wartości wektora współczynników $k$
+		\end{itemize}
+	\end{itemize}
+	
+	W przypadku układu równań rozwiązanie w wykorzystaniem powyższych wzorów przyjmuje postać:
+	$$\begin{cases}
+	y_{1,i+1} = y_{1,i} + h*\displaystyle\sum_{j=1}^{r}c_jk_{1,j} \\
+	
+	y_{2,i+1} = y_{2,i} + h*\displaystyle\sum_{j=1}^{r}c_jk_{2,j} \\
+	
+	k_{m,j}=f_m(x_i+h\displaystyle\sum_{l=1}^{j-1}b_{j,l} \quad;\quad y_{1,i} + h\displaystyle\sum_{l=1}^{j-1}b_{j,l}k_{1,l} \quad;\quad y_{2,i} + h\displaystyle\sum_{l=1}^{j-1}b_{j,l}k_{2,l})
+	\end{cases}
+	$$
 	\section{Algorytm}
-
-	\section{Warunek STOPu}
+	Kolejność wykonywania zadań:
+	\begin{enumerate} 
+		\item for i = 1 : n
+		\begin{itemize}
+			\item for j = 1 : r
+			\begin{itemize}
+				\item wyznacz $\displaystyle\sum_{l=1}^{j-1}b_{j,l}$
+				\item wyznacz $\displaystyle\sum_{l=1}^{j-1}b_{j,l}k_{1,l}$
+				\item wyznacz $\displaystyle\sum_{l=1}^{j-1}b_{j,l}k_{2,l}$
+				\item oblicz $k_{1,j}$ oraz $k_{2,j}$
+			\end{itemize}
+			\item wyznacz $\displaystyle\sum_{j=1}^{r}c_jk_{1,j}$ oraz $\displaystyle\sum_{j=1}^{r}c_jk_{2,j}$
+			\item oblicz $y_{1,i+1}$ oraz $y_{2,i+1}$
+		\end{itemize}
+	\end{enumerate}
+	Powyższy algorytm zrealizowany jest w jednej funkcji:
+	$$[X, Y1, Y2] = eqSet_runkut( f1, f2, y1_0, y2_0, a, b, n )$$
+	przyjmującej jako parametry:
+	\begin{itemize}
+		\item $f1$ - pierwsza funkcja układu równań
+		\item $f1$ - druga funkcja układu równań
+		\item $y1_0$ - przybliżenie początkowe dla funkcji $f1$ w punkcie $a$
+		\item $y2_0$ - przybliżenie początkowe dla funkcji $f2$ w punkcie $a$
+		\item $a$ - początek przedziału
+		\item $b$ - koniec przedziału
+		\item $n$ - ilość podziałów rozważanego przedziału
+	\end{itemize}
+	Funkcja zwraca wartość parametru $\beta \in beta\_range$ dla którego błąd jest minimalny.
 	
 	\section{Przykłady}
 	
